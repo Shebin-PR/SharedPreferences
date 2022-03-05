@@ -12,55 +12,56 @@ class _HomeScreenState extends State<HomeScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
 
-  List<Map<String, dynamic>> detail = [];
-  int lgt = 0;
+  int lengthOfData = 0;
 
   saveDataLocally(String email, String phone) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final a = prefs.getStringList("emails");
-    final b = prefs.getStringList("phones");
+    final getEmail = prefs.getStringList("emails");
+    final getPhone = prefs.getStringList("phones");
 
-    if (a != null && b != null) {
-      final yy = a
+    if (getEmail != null && getPhone != null) {
+      final validateEmail = getEmail
           .where((element) => element.toLowerCase() == email.toLowerCase())
           .isEmpty;
-      final zz = b
+      final validatePhone = getPhone
           .where((element) => element.toLowerCase() == phone.toLowerCase())
           .isEmpty;
 
-      if (yy && zz) {
-        a.add(email);
-        await prefs.setStringList("emails", a);
-        b.add(phone);
-        await prefs.setStringList("phones", b);
+      if (validateEmail && validatePhone) {
+        getEmail.add(email);
+        await prefs.setStringList("emails", getEmail);
+        getPhone.add(phone);
+        await prefs.setStringList("phones", getPhone);
       } else {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Already exist")));
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Already exist"),
+          ),
+        );
       }
     } else {
-      final tv = [email];
-      await prefs.setStringList("emails", tv);
-      final sv = [phone];
-      await prefs.setStringList("phones", sv);
+      final setEmail = [email];
+      await prefs.setStringList("emails", setEmail);
+      final setPhone = [phone];
+      await prefs.setStringList("phones", setPhone);
     }
     setState(() {});
   }
 
-  List<String> nmn = [];
-  List<String> abc = [];
+  List<String> allEmail = [];
+  List<String> allPhone = [];
 
   abcd() async {
-    // detail = [];
     final SharedPreferences preferences = await SharedPreferences.getInstance();
-    final a = preferences.getStringList("emails");
-    final b = preferences.getStringList("phones");
+    final _getEmail = preferences.getStringList("emails");
+    final _getPhone = preferences.getStringList("phones");
 
-    if (a != null && b != null) {
-      abc = a.toList();
-      nmn = b.toList();
+    if (_getEmail != null && _getPhone != null) {
+      allEmail = _getEmail.toList();
+      allPhone = _getPhone.toList();
     }
-    if (abc.length == nmn.length) {
-      lgt = abc.length;
+    if (allEmail.length == allPhone.length) {
+      lengthOfData = allEmail.length;
     }
     setState(() {});
   }
@@ -145,7 +146,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           emailController.text, phoneController.text);
 
                       setState(() {});
-
                       emailController.clear();
                       phoneController.clear();
                     },
@@ -172,7 +172,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       topRight: Radius.circular(30)),
                 ),
                 child: ListView.builder(
-                  itemCount: lgt,
+                  itemCount: lengthOfData,
                   itemBuilder: (BuildContext context, int index) {
                     return Padding(
                       padding: const EdgeInsets.only(top: 20, left: 20),
@@ -181,14 +181,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         shrinkWrap: true,
                         children: [
                           Text(
-                            "Email  : " + abc[index],
+                            "Email  : " + allEmail[index],
                             style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w400,
                                 fontSize: 20),
                           ),
                           Text(
-                            "Phone : " + nmn[index],
+                            "Phone : " + allPhone[index],
                             style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w400,
